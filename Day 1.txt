@@ -1,0 +1,70 @@
+create table employee_address(
+	emp_id int not null,
+	address varchar(100),
+)
+select * from employee
+
+insert into employee values('abc',1,'qwe')
+insert into employee values('ybc',2,'owe')
+insert into employee values('hbc',3,'pwe')
+
+--default constraint--
+alter table employee
+add constraint df_empadd
+default 1 for emp_add
+
+--check constraint--
+alter table employee
+add constraint cc_empadd
+check (emp_id < 11)
+
+--drop constaints--
+alter table employee
+drop constraint constraint_name
+
+insert into employee (emp_name,emp_id) values('hbc',3)
+insert into employee (emp_name,emp_id) values('hbc',11)
+insert into employee_address values(1,NULL)
+
+--change datatype--
+alter table employee_address
+alter column address char
+
+--store procedure--
+create procedure sp_gme
+as
+select * from employee_address
+go
+
+exec sp_gme
+
+--view--
+create view info as
+select emp_name,emp_id 
+from employee
+
+select * from info
+
+--temp table--
+create table #temptable(stu_id int not null,stu_name varchar(100),stu_address varchar(100))
+
+insert into #temptable values(1,'abc','pyz')
+insert into #temptable values(2,'dbc','oyz')
+insert into #temptable values(3,'ebc','zyz')
+
+create table ptemptable(stu_id int not null,stu_name varchar(100),stu_address varchar(100))
+
+insert into ptemptable values(1,'abc','pyz')
+insert into ptemptable values(2,'dbc','oyz')
+insert into ptemptable values(3,'ebc','zyz')
+
+select * from #temptable
+select * from ptemptable
+
+insert  into #temptable 
+select stu_name from ptemptable
+
+--cte--
+with gme_cte as(
+select * from ptemptable)
+select * from gme_cte

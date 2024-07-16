@@ -1,0 +1,158 @@
+select * from Sales.Customer
+--Trigger--
+create table dbo.AuditLog(
+	log_id int identity(1,1) primary key,
+	InsertDate datetime,
+	InsertBy nvarchar(100),
+	UpdatedDate datetime,
+	UpdatedBy nvarchar(100),
+	DeleteDate datetime,
+	DeltededBy nvarchar(100),
+	)
+select * from dbo.AuditLog;
+
+--insrt trigger--
+create trigger trg_afterInsert1
+on Sales.Customer
+after insert
+as
+begin
+	insert into dbo.AuditLog(InsertDate,InsertBy)
+	values(getdate(),suser_sname());
+end;
+go
+
+insert into Sales.Customer (PersonID) values (1)
+insert into Sales.Customer (PersonID) values (2)
+insert into Sales.Customer (PersonID) values (3)
+insert into Sales.Customer (PersonID,StoreID) values (4,5)
+select * from dbo.AuditLog
+
+
+--update trigger--
+create trigger trg_afterUpdate2
+on Sales.Customer
+after update
+as
+begin
+	insert into dbo.AuditLog(UpdatedDate,UpdatedBy)
+	values(getdate(),suser_sname());
+end;
+go
+
+--trigger delete--
+create trigger trg_afterDelete
+on Sales.Customer
+after delete
+as
+begin
+	insert into dbo.AuditLog(DeleteDate,DeltededBy)
+	values(getdate(),suser_sname());
+end;
+go
+
+update Sales.Customer set PersonID = 5 where PersonID = 3
+delete from Sales.Customer where PersonID=2
+
+create table dbo.insertlog1(
+	personId int,
+)
+create table dbo.deletelog12(
+	personId int,
+)
+
+--alternate trigger--
+create trigger trg_afterInsert12
+on Sales.Customer
+after insert
+as
+begin
+	insert into dbo.insertlog1(personId)
+	select personId from inserted
+end;
+go
+
+create trigger trg_afterDeleted16
+on Sales.Customer
+after delete
+as
+begin
+	insert into dbo.deletelog12(personId)
+	select personId from deleted
+end;
+go
+
+insert into Sales.Customer (PersonID) values (15)
+insert into Sales.Customer (PersonID) values (16)
+delete from Sales.Customer where PersonID=16
+select * from dbo.insertlog1
+select * from dbo.deletelog12
+
+--instead of trigger name--
+create trigger afteer12
+on Sales.Customer
+instead of insert 
+as 
+begin
+	insert into dbo.AuditLog(UpdatedBy,UpdatedDate)
+	select 
+		i.PersonID,getdate() from inserted i;
+end;
+go
+
+insert into Sales.Customer (PersonID) values(50)
+
+--parametrs--
+tbl_name=Sales.Customer
+select * from {tbl_name}
+
+--scaler function--
+create table retail(
+	toys varchar(100),
+	price int,
+	quantity int,
+)
+
+insert into retail values('car',500,25)
+insert into retail values('bike',200,20)
+insert into retail values('sccoter',100,4)
+insert into retail values('plane',5000,8)
+
+select * from retail
+
+create function calcPrice(@unitprice decimal(10,2),@quantity int)
+returns decimal(10,2)
+as
+begin
+	declare @totalprice decimal(10,2);
+	set @totalprice = @unitprice * @quantity;
+	return @totalprice;
+end;
+
+select toys,price,quantity,dbo.calcPrice(price,quantity) as totalprice from retail;
+
+--table funtion--
+create function GetproductName1(@name nvarchar(100))
+returns table
+as 
+return(
+	select toys,price,quantity from retail where @name=toys)
+
+select * from dbo.GetproductName1('car')
+--commit transaction--
+begin transaction;
+declare @FromWareHoudeId int =1;
+declare @ToWareHouseId int =2;
+declare @ProductId int=1;
+declare @quantityToTransfer int =10;
+
+update Production.ProductInventory
+set Quantity = Quantity - @quantityToTransfer
+where ProductID = @ProductId and LocationID=@FromWareHoudeId;
+
+insert into Production.ProductInventory(ProductID,LocationID,Shelf,Bin,Quantity)
+values (@ProductId,@ToWareHouseId,'A','1',@quantityToTransfer);
+
+commit transaction;
+
+select * from Production.ProductInventory
