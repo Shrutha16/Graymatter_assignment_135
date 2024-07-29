@@ -1,0 +1,1108 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil\fcharset0 Calibri;}{\f1\fnil\fcharset2 Wingdings;}{\f2\fnil\fcharset161 Calibri;}}
+{\colortbl ;\red255\green0\blue0;\red0\green0\blue255;}
+{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\qc\b\f0\fs36\lang9 Python Assignment 2\b0\par
+
+\pard\sa200\sl276\slmult1\fs22\par
+\cf1 1. Data Manipulation with Pandas:\cf0\par
+\cf1 Given a dataset in the form of a dictionary, convert it to a DataFrame and perform \par
+the following tasks:\par
+\f1\'a7\f0  Remove rows with missing values.\par
+\f1\'a7\f0  Group the data by 'Product' and calculate the total sales for each product.\par
+\f1\'a7\f0  Sort the results by total sales in descending order.\par
+\cf0 import pandas as pd\par
+import numpy as np\par
+data = \{\par
+    'Product': ['A', 'B', 'A', 'B', 'B', 'A', 'B', 'B'],\par
+    'Sales': [100, 150, np.nan, 200, 180, 300, np.nan, 250]\par
+\}\par
+df = pd.DataFrame(data)\par
+df.dropna(inplace=True)\par
+product_sales = df.groupby('Product')['Sales'].sum()\par
+product_sales_sort=product_sales.sort_values(by='Sales',ascending=True)\par
+\cf1 Create a pivot table that shows the sum of sales for each product, broken down \par
+by month.\par
+\cf0 import pandas as pd\par
+import numpy as np\par
+data = \{\par
+    'Product': ['A', 'B', 'A', 'C', 'B', 'A', 'C', 'B'],\par
+    'Sales': [100, 150, 120, 200, 180, 300, 220, 250],\par
+    'Date': ['2023-01-01', '2023-01-05', '2023-02-10', '2023-02-15', '2023-01-20', '2023-03-03', '2023-03-08', '2023-03-12']\par
+\}\par
+df=pd.DataFrame(data)\par
+df['Date'] = pd.to_datetime(df['Date'])\par
+df['Month'] = df['Date'].dt.month\par
+pivot_table = pd.pivot_table(df, values='Sales', index='Product', columns='Month', aggfunc=np.sum, fill_value=0)\par
+print(pivot_table)\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 2. Data Cleaning:\par
+\f1\'b7\f0  Write a function that takes a DataFrame with various types of data (numeric, \par
+text, dates) and performs the following cleaning steps:\par
+\f1\'a7\f0  Replace all empty strings with NaN.\par
+\f1\'a7\f0  Fill numeric NaNs with the mean of their column.\par
+\f1\'a7\f0  Convert all text to lowercase.\par
+\cf0 def clean_dataframe(df):\par
+    df.replace('', np.nan, inplace=True)\par
+    numeric_columns = df.select_dtypes(include=np.number).columns\par
+    df[numeric_columns] = df[numeric_columns].fillna(df[numeric_columns].mean())\par
+    text_columns = df.select_dtypes(include=object).columns\par
+    df[text_columns] = df[text_columns].apply(lambda x: x.str.lower() if x.dtype == "object" else x)\par
+    return df\par
+data = \{\par
+    'ID': [1, 2, 3, 4],\par
+    'Name': ['bat', 'cat', 'mat', '']\par
+    'Age': [25, np.nan, 30, 35, 40],\par
+    'City': ['New York', 'Los Angeles', '', 'Chicago'],\par
+    'Salary': [50000, 60000, 70000, np.nan],\par
+    'Join Date': ['2020-01-01', '2019-05-15', '2021-02-20', '2018-11-10']\par
+\}\par
+df = pd.DataFrame(data)\par
+clean = clean_dataframe(df)\par
+print(clean)\par
+\cf1\f1\'b7\f0  Write a function that detects and removes outliers from a numeric column in a \par
+DataFrame using the IQR method.\par
+\cf0 import pandas as pd\par
+def remove_outliers(df, column):\par
+    Q1 = df[column].quantile(0.25)\par
+    Q3 = df[column].quantile(0.75)\par
+    IQR = Q3 - Q1\par
+    lower_bound = Q1 - 1.5 * IQR\par
+    upper_bound = Q3 + 1.5 * IQR\par
+    df_cleaned = df[(df[column] >= lower_bound) & (df[column] <= upper_bound)]\par
+    return df_cleaned\par
+data = \{\par
+    'Score': [45, 48, 44, 21, 20]\par
+\}\par
+df = pd.DataFrame(data)\par
+clean = remove_outliers(df, 'Score')\par
+print(clean)\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 3. Lambda Functions and Map-Reduce:\par
+\f1\'b7\f0  Use a lambda function to \f2\lang1032\u976?ilter out even numbers from a list of integers.\par
+\cf0 num=[11, 12, 13, 14, 15, 16, 17, 18, 19, 20]\par
+filterred=list(filter(lambda x: x % 2 != 0, num))\par
+print(num)\par
+print(filterred)\par
+\cf1\f1\'b7\f0\lang1033  Use the reduce function to calculate the product of the remaining numbers.\par
+\cf0 from functools import reduce\par
+numb = [1, 2, 3, 4, 5]\par
+product = reduce(lambda x, y: x * y, numb)\par
+print(numb)\par
+print( product)\par
+\f1\'b7\f0  Use a lambda function with the \f2\lang1032\u976?ilter function to remove words from a list that \par
+are shorter than 4 characters. Then, use reduce to concatenate the remaining \par
+words into a single string.\par
+from functools import reduce\par
+words = ["mango", "banana", "pear", "kiwi", "orange"]\par
+result_string = reduce(lambda x, y: x + " " + y, filter(lambda word: len(word) >= 4, words))\par
+print("List of words:", words)\par
+print("Concatenated string:", result_string)\par
+\f0\lang1033 ---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 4. Data Visualization:\par
+\f1\'b7\f0  Using Matplotlib, create a line chart showing the trend of sales over time from \par
+the given dataset.\par
+\cf0 import pandas as pd\par
+import matplotlib.pyplot as plt\par
+data = \{\par
+    'Date': ['2022-01-01','2022-01-02','2022-01-03', '2022-01-04','2022-01-05',\par
+             '2022-01-06','2022-01-07','2022-01-08','2022-01-09', '2022-01-10'],\par
+    'Sales': [11, 12, 13, 14, 15, 16, 17, 18, 19, 20]\par
+\}\par
+df = pd.DataFrame(data)\par
+plt.figure(figsize=(10, 6))\par
+plt.plot(df['Date'], df['Sales'], marker='o', color='b', label='Sales Trend')\par
+plt.title('Sales Trend Over Time')\par
+plt.xlabel('Date')\par
+plt.ylabel('Sales')\par
+plt.xticks(rotation=45)\par
+plt.grid(True)\par
+plt.legend()\par
+plt.tight_layout()\par
+plt.show()\par
+\cf1\f1\'b7\f0  Customize the chart with labels, title, and legend.\par
+\cf0 import numpy as np\par
+np.random.seed(0)\par
+x = np.random.randn(50)\par
+y = 2 * x + np.random.randn(50)\par
+plt.figure(figsize=(4, 4))\par
+plt.scatter(x, y, color='r', label='Data Points')\par
+import numpy as np\par
+np.random.seed(0)\par
+df_scatter = pd.DataFrame(\{\par
+    'X': np.random.rand(50) * 100,\par
+    'Y': np.random.rand(50) * 100\par
+\})\par
+z = np.polyfit(df_scatter['X'], df_scatter['Y'], 1)\par
+p = np.poly1d(z)\par
+plt.figure(figsize=(8, 6))\par
+plt.scatter(df_scatter['X'], df_scatter['Y'], color='b', label='Data Points')\par
+plt.plot(df_scatter['X'], p(df_scatter['X']), color='r', linestyle='--', label='Trend Line')\par
+plt.title('Scatter Plot with Trend Line')\par
+plt.xlabel('X')\par
+plt.ylabel('Y')\par
+plt.grid(True)\par
+plt.legend()\par
+plt.tight_layout()\par
+plt.show()\par
+\cf1\f1\'b7\f0  Create a scatter plot showing the relationship between two numerical columns \par
+in a DataFrame. Add a trend line to the scatter plot.\par
+\cf0 import numpy as np\par
+np.random.seed(0)\par
+x = np.random.randn(50)\par
+y = 2 * x + np.random.randn(50)\par
+plt.figure(figsize=(8, 6))\par
+plt.scatter(x, y, color='g', label='Data Points')\par
+m, b = np.polyfit(x, y, 1) \par
+plt.plot(x, m * x + b, color='r', label='Trend Line')\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 5. Data Aggregation:\par
+\f1\'b7\f0  Given a list of dictionaries representing transactions, write a function to \par
+aggregate the total amount spent by each user.\par
+\cf0 from collections import defaultdict\par
+def aggregate_total_spent(transactions):\par
+    # Create a defaultdict to store total amount spent by each user\par
+    total_spent = defaultdict(float)\par
+    for transaction in transactions:\par
+        user = transaction['user']\par
+        amount_spent = transaction['amount']\par
+        total_spent[user] += amount_spent\par
+    return total_spent\par
+transactions = [\par
+    \{'user': 'Cat', 'amount': 100.0\},\par
+    \{'user': 'Bat', 'amount': 50.0\},\par
+    \{'user': 'Cat', 'amount': 200.0\},\par
+    \{'user': 'Bat', 'amount': 150.0\},\par
+    \{'user': 'Cat', 'amount': 50.0\},\par
+]\par
+total_spent = aggregate_total_spent(transactions)\par
+for user, total_amount in total_spent.items():\par
+    print(f"User: \{user\}, Total Amount Spent: \{total_amount\}")\par
+\cf1\f1\'b7\f0  Write a function that calculates the moving average of the total amount spent by \par
+each user over a speci\f2\lang1032\u976?ied window size.\par
+\cf0 from collections import defaultdict, deque\par
+def moving_average_total_spent(transactions, window_size):\par
+    user_total = defaultdict(list)\par
+    moving_avg = defaultdict(float\f0\lang1033 )\f2\lang1032\par
+    for transaction in transactions:\par
+        user = transaction['user']\par
+        amount = transaction['amount']\par
+        user_total[user].append(amount\f0\lang1033 )\f2\lang1032\par
+        if len(user_total[user]) > window_size:\par
+            user_total[user].pop(0)        \par
+        total_spent = sum(user_total[user])\par
+        moving_avg[user] = total_spent / len(user_total[user])\par
+    return dict(moving_avg)\par
+window_size = 3\par
+moving_avg = moving_average_total_spent(transactions, window_size)\par
+print("\\nMoving average of total amount spent by each user:")\par
+print(moving_avg)\par
+\f0\lang1033 ---------------------------------------------------------------------------------------------------------------------------\f2\lang1032\par
+\cf1 6. Exception Handling:\par
+\f1\'b7\f0\lang1033  Write a function that handles division by zero and returns a meaningful error \par
+message when a division by zero occurs.\par
+\cf0 def safe_divide(a, b):\par
+    try:\par
+        res = a / b\par
+    except ZeroDivisionError:\par
+        return "Error"\par
+    else:\par
+        return res\par
+print(safe_divide(5,0))\par
+\cf1\f1\'b7\f0  Write a function that takes a list of \f2\lang1032\u976?ile paths and attempts to open each one, \par
+handling FileNotFoundError, PermissionError, and IOError, and logging the results.\par
+\cf0\lang1033 import logging\par
+def open_files(file_paths):\par
+     logging.basicConfig(filename='file_opening.log', level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')\par
+    for file_path in file_paths:\par
+        try:\par
+            with open(file_path, 'r') as file:\par
+                logging.info(f"Successfully opened file: \{file_path\}")\par
+        except FileNotFoundError:\par
+            logging.error(f"FileNotFoundError: File not found: \{file_path\}")\par
+        except PermissionError:\par
+            logging.error(f"PermissionError: Permission denied: \{file_path\}")\par
+        except IOError:\par
+            logging.error(f"IOError: Unable to open file: \{file_path\}")\par
+        except Exception as e:\par
+            logging.error(f"Unexpected error occurred while opening file \{file_path\}: \{str(e)\}")\par
+file_paths = ['file1.txt', 'file2.txt', 'file3.txt', '/root/somefile.txt']\par
+open_files(file_paths)\par
+\f0 ---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 7. Working with Dates:\par
+\f1\'b7\f0  Write a function that takes a list of date strings in various formats and converts \par
+them to a standardized format (YYYY-MM-DD).\par
+\cf0 from datetime import datetime\par
+def date(date_strings):\par
+    updated_dates = []\par
+    for date_str in date_strings:\par
+        try:\par
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d')\par
+        except ValueError:\par
+            try:\par
+                date_obj = datetime.strptime(date_str, '%m/%d/%Y')\par
+            except ValueError:\par
+                try:\par
+                    date_obj = datetime.strptime(date_str, '%d-%b-%Y')\par
+                except ValueError:\par
+                    try:\par
+                        date_obj = datetime.strptime(date_str, '%Y-%b-%d')\par
+                    except ValueError:\par
+                        print(f"Skipping invalid date format: \{date_str\}")\par
+                        continue\par
+        updated_dates.append(date_obj.strftime('%Y-%m-%d'))\par
+    return updated_dates\par
+\cf1\f1\'b7\f0  Write a function that calculates the number of business days between two given \par
+dates, excluding weekends and holidays.\par
+\cf0 from datetime import datetime, timedelta\par
+def working(date):\par
+    return date.weekday() < 5\par
+def work(start_date, end_date, holidays=[]):\par
+    current_date = start_date\par
+    work_count = 0    \par
+    while current_date <= end_date:\par
+        if workday(current_date) and current_date not in holidays:\par
+            work_count += 1\par
+        current_date += timedelta(days=1) \par
+    return work_count\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 8. ETL Process:\par
+\f1\'b7\f0  Simulate an ETL process using Python that extracts data from a list of \par
+dictionaries, transforms it by normalizing numeric \f2\lang1032\u976?ields, and loads it into a \par
+Pandas DataFrame.\par
+\cf0\lang1033 import pandas as pd\par
+data = [\par
+    \{'id': 1, 'name': 'Cat', 'age': 45, 'salary': 50000\},\par
+    \{'id': 2, 'name': 'Bat', 'age': 30, 'salary': 45000\},\par
+    \{'id': 3, 'name': 'Spider', 'age': 48, 'salary': 9000\},\par
+    \{'id': 4, 'name': 'Mat', 'age': 25, 'salary': 6000\},\par
+    \{'id': 5, 'name': 'Pat', 'age': 37, 'salary': 80000\}\par
+]\par
+for entry in data:\par
+    entry['final_salary'] = entry['salary'] / 100\par
+df = pd.DataFrame(data)\par
+print(df)\par
+\cf1\f1\'b7\f0  Extend the ETL process to include a validation step that checks for data quality \par
+issues (e.g., missing values, outliers) before loading the data into the DataFrame.\par
+\cf0 import pandas as pd\par
+data = [\par
+    \{'id': 1, 'name': 'Cat', 'age': 45, 'salary': 50000\},\par
+    \{'id': 2, 'name': 'Bat', 'age': 30, 'salary': 45000\},\par
+    \{'id': 3, 'name': 'Spider', 'age': 48, 'salary': 9000\},\par
+    \{'id': 4, 'name': 'Mat', 'age': 25, 'salary': 6000\},\par
+    \{'id': 5, 'name': 'Pat', 'age': 37, 'salary': 80000\}\par
+]\par
+for entry in data:\par
+    if entry['age'] is None:\par
+        entry['age'] = 0 \par
+    entry['total_salary'] = entry['salary'] / 100 \par
+df = pd.DataFrame(data)\par
+def validate_data(df):\par
+    issues_found = False\par
+    for column in df.columns:\par
+        if df[column].isnull().any():\par
+            issues_found = True\par
+            print(f"Missing values '\{column\}'")\par
+        if column == 'salary':\par
+            salary_std = df['salary'].std()\par
+            salary_mean = df['salary'].mean()\par
+            salary_threshold = salary_mean + 2 * salary_std\par
+            if (df['salary'] > salary_threshold).any():\par
+                issues_found = True\par
+                print("Warning 'salary'")\par
+    if not issues_found:\par
+        print("clean.")\par
+validate_data(df)\par
+print(df)\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 9. Data Normalization:\par
+\f1\'b7\f0  Write a function that normalizes the values in a DataFrame column to a range \par
+between 0 and 1.\par
+\cf0 import pandas as pd\par
+def normalize_column(df, column_name):\par
+    column = df[column_name]\par
+    minVal = column.min()\par
+    maxVal = column.max()\par
+    normalized_values = (column - minVal) / (maxVal - minVal)\par
+    df[column_name] = normalized_values\par
+    return df\par
+data = \{\par
+    'A': [1, 2, 3, 4, 5],\par
+    'B': [11, 12, 13, 14, 15],\par
+    'C': [10, 20, 30, 40, 50]\par
+\}\par
+df = pd.DataFrame(data)\par
+normalized_df = normalize_column(df.copy(), 'B')\par
+print(normalized_df)\par
+\f1\'b7\f0  Write a function that standardizes the values in a DataFrame column (mean=0, \par
+standard deviation=1).\par
+import pandas as pd\par
+def standardize_column(df, column_name):\par
+    column = df[column_name]\par
+    meanValue = column.mean()\par
+    stdValue = column.std()       \par
+    standardized_values = (column - meanValue) / stdValue    \par
+    df[column_name] = standardized_values    \par
+    return df\par
+data = \{\par
+    'A': [1, 2, 3, 4, 5],\par
+    'B': [10, 20, 30, 40, 50],\par
+    'C': [100, 200, 300, 400, 500]\par
+\}\par
+df = pd.DataFrame(data)\par
+standardized_df = standardize_column(df.copy(), 'C')\par
+print("\\nStandardized DataFrame (column C):")\par
+print(standardized_df)\par
+\cf1\par
+-------------------------------------------------------------------------------------------------------------------\par
+10. Advanced List Comprehensions:\par
+Given a list of numbers, create a new list containing the square roots of the even\par
+numbers only, using list comprehension.\par
+\cf0 import math\par
+numbers = [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]\par
+square_roots_of_even = [math.sqrt(num) for num in numbers if num % 2 == 0]\par
+print("Original list of numbers:", numbers)\par
+print("Square roots of even numbers:", square_roots_of_even)\par
+\cf1\par
+Given a list of tuples representing (name, score), create a new list containing\par
+names of students who scored above the average, using list comprehension.\par
+\cf0 student_scores = [\par
+    ("Alice", 85), ("Bob", 92), ("Charlie", 78), ("David", 88), ("Eve", 95), ("Frank", 82),("Grace", 90)]\par
+scores = [score for _, score in student_scores]\par
+average_score = sum(scores) / len(scores)\par
+above_average_students = [name for name, score in student_scores if score > average_score]\par
+print("Original list of student scores:")\par
+print(student_scores)\par
+print("\\nNames of students who scored above the average:")\par
+print(above_average_students)\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 11. Unit Testing:\par
+ Write unit tests for a function that calculates the factorial of a number. Use the\par
+unittest framework.\cf0\par
+import unittest\par
+def factorial(n):\par
+    if n < 0:\par
+        raise ValueError("Factorial is not defined for negative numbers")\par
+    if n == 0:\par
+        return 1\par
+    result = 1\par
+    for i in range(1, n + 1):\par
+        result *= i\par
+    return result\par
+class TestFactorialFunction(unittest.TestCase):\par
+    def test_factorial_zero(self):\par
+        self.assertEqual(factorial(0), 1)\par
+    def test_factorial_positive(self):\par
+        self.assertEqual(factorial(5), 120)    \par
+    def test_factorial_negative(self):\par
+        with self.assertRaises(ValueError):\par
+            factorial(-1)    \par
+    def test_factorial_large_number(self):\par
+        self.assertEqual(factorial(10), 3628800)\par
+if __name__ == '__main__':\par
+    unittest.main()\par
+\cf1 Write unit tests for a function that checks if a given string is a palindrome.\cf0\par
+import unittest\par
+def is_palindrome(s):\par
+    s = s.lower().replace(" ", "")  \par
+    return s == s[::-1]\par
+class TestIsPalindromeFunction(unittest.TestCase):   \par
+    def test_palindrome_true(self):\par
+        self.assertTrue(is_palindrome("radar"))\par
+        self.assertTrue(is_palindrome("A Santa at NASA"))    \par
+    def test_palindrome_false(self):\par
+        self.assertFalse(is_palindrome("hello"))\par
+        self.assertFalse(is_palindrome("not a palindrome"))\par
+if __name__ == '__main__':\par
+    unittest.main()\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 12. Decorators:\par
+Create a decorator that logs the execution time of a function. Apply it to a\par
+function that sorts a large list.\cf0\par
+import time\par
+from functools import wraps\par
+def log_execution_time(func):\par
+    @wraps(func)\par
+    def wrapper(*args, **kwargs):\par
+        start_time = time.time()\par
+        result = func(*args, **kwargs)\par
+        end_time = time.time()\par
+        execution_time = end_time - start_time\par
+        print(f"Execution time of \{func.__name__\}: \{execution_time:.4f\} seconds")\par
+        return result\par
+    return wrapper\par
+@log_execution_time\par
+def sort_large_list(large_list):\par
+    return sorted(large_list)\par
+if __name__ == '__main__':    \par
+    large_list = list(range(1000, 0, -1))\par
+    sorted_list = sort_large_list(large_list)\par
+    print(f"Sorted list: \{sorted_list[:10]\}... (truncated)")\par
+\cf1 Create a decorator that retries a function up to 3 times if it raises an exception,\par
+with a delay between retries\cf0\par
+import time\par
+from functools import wraps\par
+def retry(max_retries=3, delay=1):\par
+    def decorator_retry(func):\par
+        @wraps(func)\par
+        def wrapper(*args, **kwargs):\par
+            retries = 0\par
+            while retries < max_retries:\par
+                try:\par
+                    return func(*args, **kwargs)\par
+                except Exception as e:\par
+                    print(f"Attempt \{retries + 1\} failed: \{str(e)\}")\par
+                    retries += 1\par
+                    time.sleep(delay)\par
+            raise RuntimeError(f"Function \{func.__name__\} failed after \{max_retries\} retries")\par
+        return wrapper\par
+    return decorator_retry\par
+@retry(max_retries=3, delay=2)\par
+def unreliable_function():\par
+    import random\par
+    if random.random() < 0.7:\par
+        raise ValueError("Random failure")\par
+    return "Success"\par
+if __name__ == '__main__':\par
+    try:\par
+        result = unreliable_function()\par
+        print(f"Function returned: \{result\}")\par
+    except RuntimeError as e:\par
+        print(f"Function failed: \{str(e)\}")\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 13. Concurrency with Threads:\par
+Write a program that uses threading to calculate the sum of a large list of\par
+numbers by dividing the work among multiple threads.\par
+\cf0 import threading\par
+def sum_sublist(sublist, result):\par
+    result_sum = sum(sublist)\par
+    result.append(result_sum)\par
+def calculate_sum_with_threads(numbers, num_threads):\par
+    chunk_size = (len(numbers) + num_threads - 1) // num_threads\par
+    chunks = [numbers[i:i + chunk_size] for i in range(0, len(numbers), chunk_size)]\par
+    result = []\par
+    threads = []\par
+    for chunk in chunks:\par
+        thread = threading.Thread(target=sum_sublist, args=(chunk, result))\par
+        thread.start()\par
+        threads.append(thread)\par
+    for thread in threads:\par
+        thread.join()\par
+    return sum(result)\par
+if __name__ == '__main__':\par
+    large_list = list(range(1, 1000001)) \par
+    num_threads = 4  \par
+    total_sum = calculate_sum_with_threads(large_list, num_threads)\par
+    print(f"Total sum using \{num_threads\} threads: \{total_sum\}")\par
+\cf1 Write a program that uses threading to fetch data from multiple URLs concurrently and print the status code of each response.\cf0\par
+import threading\par
+import requests\par
+def fetch_url(url):\par
+    try:\par
+        response = requests.get(url)\par
+        print(f"URL: \{url\}, Status Code: \{response.status_code\}")\par
+    except requests.RequestException as e:\par
+        print(f"URL: \{url\}, Exception: \{str(e)\}")\par
+def fetch_urls_with_threads(urls):\par
+    threads = []\par
+    for url in urls:\par
+        thread = threading.Thread(target=fetch_url, args=(url,))\par
+        thread.start()\par
+        threads.append(thread)\par
+    for thread in threads:\par
+        thread.join()\par
+if __name__ == '__main__':\par
+    urls = [\par
+        "{{\field{\*\fldinst{HYPERLINK https://jsonplaceholder.typicode.com/posts/1 }}{\fldrslt{https://jsonplaceholder.typicode.com/posts/1\ul0\cf0}}}}\f0\fs22 ",\par
+        "{{\field{\*\fldinst{HYPERLINK https://jsonplaceholder.typicode.com/posts/2 }}{\fldrslt{https://jsonplaceholder.typicode.com/posts/2\ul0\cf0}}}}\f0\fs22 ",\par
+        "{{\field{\*\fldinst{HYPERLINK https://jsonplaceholder.typicode.com/posts/3 }}{\fldrslt{https://jsonplaceholder.typicode.com/posts/3\ul0\cf0}}}}\f0\fs22 ",\par
+        "{{\field{\*\fldinst{HYPERLINK https://jsonplaceholder.typicode.com/posts/4 }}{\fldrslt{https://jsonplaceholder.typicode.com/posts/4\ul0\cf0}}}}\f0\fs22 ",\par
+        "{{\field{\*\fldinst{HYPERLINK https://jsonplaceholder.typicode.com/posts/5 }}{\fldrslt{https://jsonplaceholder.typicode.com/posts/5\ul0\cf0}}}}\f0\fs22 "\par
+    ]\par
+    fetch_urls_with_threads(urls)\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 14. Data Pipeline Simulation:\par
+Simulate a data pipeline that processes a list of dictionaries, applying various\par
+transformations, and outputs the processed data as a list of dictionaries.\par
+\cf0 data = [\par
+    \{"id": 1, "name": "Akash", "age": 28, "city": "Mumbai"\},\par
+    \{"id": 2, "name": "Aarti", "age": 32, "city": "Delhi"\},\par
+    \{"id": 3, "name": "Arjun", "age": 30, "city": "Bangalore"\},\par
+    \{"id": 4, "name": "Priya", "age": 25, "city": "Chennai"\},\par
+    \{"id": 5, "name": "Ravi", "age": 35, "city": "Hyderabad"\}\par
+]\par
+def filter_records(records, min_age, max_age):\par
+    filtered_data = [record for record in records if min_age <= record['age'] <= max_age]\par
+    return filtered_data\par
+def map_records(records, fields):\par
+    mapped_data = [\{field: record.get(field, None) for field in fields\} for record in records]\par
+    return mapped_data\par
+def data_pipeline(data):\par
+    # Example transformations\par
+    filtered_data = filter_records(data, 25, 30)\par
+    mapped_data = map_records(filtered_data, ['name', 'age'])\par
+    return mapped_data\par
+if __name__ == '__main__':\par
+    processed_data = data_pipeline(data)\par
+    print("Processed Data:")\par
+    for record in processed_data:\par
+        print(record)\par
+\cf1 Extend the pipeline to include an error-handling stage that logs any errors\par
+encountered during processing.\par
+\cf0 data = [\par
+    \{"id": 1, "name": "Akash", "age": 28, "city": "Mumbai"\},\par
+    \{"id": 2, "name": "Aarti", "age": 32, "city": "Delhi"\},\par
+    \{"id": 3, "name": "Arjun", "age": 30, "city": "Bangalore"\},\par
+    \{"id": 4, "name": "Priya", "age": 25, "city": "Chennai"\},\par
+    \{"id": 5, "name": "Ravi", "age": 35, "city": "Hyderabad"\},\par
+    \{"id": 6, "name": "Neha", "age": "unknown", "city": "Kolkata"\}  # Intentional error for age\par
+]\par
+def filter_records(records, min_age, max_age):\par
+    filtered_data = []\par
+    for record in records:\par
+        try:\par
+            age = int(record['age'])\par
+            if min_age <= age <= max_age:\par
+                filtered_data.append(record)\par
+        except ValueError as e:\par
+            print(f"Error filtering record \{record\}: \{str(e)\}")\par
+    return filtered_data\par
+def map_records(records, fields):\par
+    mapped_data = []\par
+    for record in records:\par
+        mapped_record = \{\}\par
+        for field in fields:\par
+            mapped_record[field] = record.get(field, None)\par
+        mapped_data.append(mapped_record)\par
+    return mapped_data\par
+def data_pipeline(data):\par
+        filtered_data = filter_records(data, 25, 30)\par
+        mapped_data = map_records(filtered_data, ['name', 'age']) \par
+        return mapped_data\par
+    except Exception as e:\par
+        print(f"Error in data pipeline: \{str(e)\}")\par
+        return []\par
+if __name__ == '__main__':\par
+    processed_data = data_pipeline(data)\par
+    print("\\nProcessed Data:")\par
+    for record in processed_data:\par
+        print(record)\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 15. Configuration Management:\par
+Write a Python script that reads configuration settings from a dictionary and\par
+uses them to perform a specific task.\cf0\par
+config = \{\par
+    "username": "admin",\par
+    "password": "secretpassword",\par
+    "host": "localhost",\par
+    "port": 5432,\par
+    "database": "mydatabase"\par
+\}\par
+def perform_task_with_config(config):\par
+    print(f"Connecting to database \{config['database']\} on \{config['host']\}:\{config['port']\}...")\par
+if __name__ == "__main__":\par
+    perform_task_with_config(config)\par
+\cf1 Write a function that validates the configuration settings, ensuring that all\par
+required fields are present and have valid values.\par
+\cf0 def validate_config(config):\par
+    required_fields = ["username", "password", "host", "port", "database"]\par
+    for field in required_fields:\par
+        if field not in config:\par
+            return False, f"Missing required field: \{field\}"\par
+        elif not config[field]:\par
+            return False, f"Empty value for field: \{field\}"    \par
+    return True, "Configuration is valid"\par
+if __name__ == "__main__":\par
+    # Validate configuration settings\par
+    is_valid, message = validate_config(config)\par
+    if is_valid:\par
+        print("Configuration is valid")\par
+    else:\par
+        print(f"Invalid configuration: \{message\}")\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 16. Handling Large Data Sets:\par
+Write a function that processes a large list of numbers in chunks and calculates\par
+the average value of the list.\par
+\cf0 def process_large_numbers(numbers, chunk_size):\par
+    total_sum = 0\par
+    count = 0\par
+    for i in range(0, len(numbers), chunk_size):\par
+        chunk = numbers[i:i + chunk_size]\par
+        total_sum += sum(chunk)\par
+        count += len(chunk)\par
+    return total_sum / count if count > 0 else 0\par
+\par
+if __name__ == "__main__":\par
+    # Example usage\par
+    numbers = list(range(1, 1000001))  \par
+    chunk_size = 10000 \par
+    average = process_large_numbers(numbers, chunk_size)\par
+    print(f"Average value of the list: \{average\}")\par
+\cf1 Write a function that processes a large list of strings in chunks, counts the\par
+frequency of each string, and returns a dictionary with the results.\par
+\cf0 from collections import defaultdict\par
+def process_large_strings(strings, chunk_size):\par
+    frequency_dict = defaultdict(int)\par
+    for i in range(0, len(strings), chunk_size):\par
+        chunk = strings[i:i + chunk_size]\par
+        for s in chunk:\par
+            frequency_dict[s] += 1\par
+    return dict(frequency_dict)\par
+if __name__ == "__main__":\par
+    strings = ["apple", "banana", "apple", "orange", "banana", "apple", "apple", "banana"] * 100000  \par
+    chunk_size = 10000  \par
+    frequency = process_large_strings(strings, chunk_size)\par
+    print(f"Frequency dictionary: \{frequency\}")\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 17. Class and Objects:\par
+Create a class representing a bank account with methods to deposit, withdraw,\par
+and check balance. Ensure proper error handling for invalid operations\cf0\par
+class BankAccount:\par
+    def __init__(self, account_number, initial_balance=0):\par
+        self.account_number = account_number\par
+        self.balance = initial_balance\par
+    \par
+    def deposit(self, amount):\par
+        if amount > 0:\par
+            self.balance += amount\par
+            print(f"Deposit of $\{amount:.2f\} successful.")\par
+        else:\par
+            print("Invalid deposit amount. Please enter a positive number.")\par
+    \par
+    def withdraw(self, amount):\par
+        if amount > 0:\par
+            if self.balance >= amount:\par
+                self.balance -= amount\par
+                print(f"Withdrawal of $\{amount:.2f\} successful.")\par
+            else:\par
+                print("Insufficient balance. Withdrawal not processed.")\par
+        else:\par
+            print("Invalid withdrawal amount. Please enter a positive number.")\par
+    \par
+    def check_balance(self):\par
+        return self.balance\par
+account = BankAccount('1234567890', 1000)\par
+account.deposit(500)\par
+print(f"Current balance: $\{account.check_balance():.2f\}")\par
+account.withdraw(200)\par
+print(f"Current balance: $\{account.check_balance():.2f\}")\par
+account.withdraw(-100)\par
+account.deposit(-50)\par
+\cf1 Extend the bank account class to support multiple currencies, with methods to\par
+convert between currencies using a given exchange rate.\par
+\cf0\par
+class BankAccount:\par
+    def __init__(self, account_number, balance=0, currency="INR"):\par
+        self.account_number = account_number\par
+        self.balance = balance\par
+        self.currency = currency\par
+\par
+    def deposit(self, amount):\par
+        if amount > 0:\par
+            self.balance += amount\par
+            print(f"Deposited \{amount\} \{self.currency\}. New balance is \{self.balance\} \{self.currency\}.")\par
+        else:\par
+            print("Deposit amount must be greater than zero.")\par
+\par
+    def withdraw(self, amount):\par
+        if 0 < amount <= self.balance:\par
+            self.balance -= amount\par
+            print(f"Withdrew \{amount\} \{self.currency\}. New balance is \{self.balance\} \{self.currency\}.")\par
+        else:\par
+            print("Invalid amount or insufficient funds.")\par
+\par
+    def check_balance(self):\par
+        print(f"Current balance of account \{self.account_number\} is \{self.balance\} \{self.currency\}.")\par
+\par
+    def set_currency(self, currency):\par
+        self.currency = currency\par
+\par
+    def convert_to(self, new_currency, exchange_rate):\par
+        if new_currency == self.currency:\par
+            print("Cannot convert to the same currency.")\par
+            return\par
+\par
+        if exchange_rate > 0:\par
+            new_balance = self.balance * exchange_rate\par
+            print(f"Converted \{self.balance\} \{self.currency\} to \{new_balance\} \{new_currency\} at rate \{exchange_rate\}.")\par
+            self.balance = new_balance\par
+            self.currency = new_currency\par
+        else:\par
+            print("Invalid exchange rate.")\par
+\par
+account1 = BankAccount("123456", 4000, "INR")\par
+account1.check_balance()\par
+account1.deposit(1000)\par
+account1.check_balance()\par
+account1.withdraw(2500)\par
+account1.check_balance()\par
+account1.convert_to("USD", 0.014)  \par
+account1.check_balance()\par
+-------------------------------------------------------------------------------------------------------------------\par
+\cf1 18. Regular Expressions:\cf0\par
+\cf1 Write a function that validates email addresses using regular expressions.\par
+\cf0 import re\par
+def validate_email(email):  \par
+    pattern = r'^[\\w\\.-]+@[\\w\\.-]+\\.\\w+$'\par
+    regex = re.compile(pattern)\par
+    if regex.match(email):\par
+        return True\par
+    else:\par
+        return False\par
+email1 = "arun123@example.com"\par
+email2 = "invalid_email@"\par
+\par
+print(f"\{email1\} is valid: \{validate_email(email1)\}")\par
+print(f"\{email2\} is valid: \{validate_email(email2)\}")\par
+\cf1 Write a function that extracts all the dates from a given text string in the format\par
+(DD-MM-YYYY). \cf0\par
+import re\par
+def extract_dates(text):\par
+     date_pattern = r'\\b(\\d\{2\}-\\d\{2\}-\\d\{4\})\\b'  \par
+     dates = re.findall(date_pattern, text)\par
+     return dates\par
+texts = "The project deadline is on 29-07-2024. Please submit the report by then. Another important date is 11-08-2024."\par
+extracted_dates = extract_dates(texts)\par
+print("Extracted dates:", extracted_dates)\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 19. Data Encryption:\par
+Write a Python script that encrypts and decrypts text using the Fernet symmetric\par
+encryption from the cryptography library.\cf0\par
+pip install cryptography\par
+from cryptography.fernet import Fernet\par
+def generate_key():\par
+    return Fernet.generate_key()\par
+def encrypt_message(message, key):\par
+    fernet = Fernet(key)\par
+    encrypted_message = fernet.encrypt(message.encode())\par
+    return encrypted_message\par
+def decrypt_message(encrypted_message, key):\par
+    fernet = Fernet(key)\par
+    decrypted_message = fernet.decrypt(encrypted_message).decode()\par
+    return decrypted_message\par
+if __name__ == "__main__":   \par
+    key = generate_key()\par
+    print(f"Generated Key: \{key.decode()\}")\par
+    plaintext_message = "Hello, this is a secret message!"\par
+    encrypted_message = encrypt_message(plaintext_message, key)\par
+    print(f"Encrypted Message: \{encrypted_message\}")\par
+    decrypted_message = decrypt_message(encrypted_message, key)\par
+    print(f"Decrypted Message: \{decrypted_message\}")\par
+\par
+\cf1 Write a function that encrypts and decrypts a dictionary of sensitive data,\par
+preserving the structure of the dictionary\par
+\cf0 pip install cryptography\par
+from cryptography.fernet import Fernet\par
+import json\par
+def generate_key():\par
+    return Fernet.generate_key()\par
+def encrypt_dict(data_dict, key):\par
+    json_data = json.dumps(data_dict).encode()\par
+    fernet = Fernet(key)\par
+    encrypted_data = fernet.encrypt(json_data)\par
+    return encrypted_data\par
+def decrypt_dict(encrypted_data, key):\par
+    fernet = Fernet(key)\par
+    decrypted_data = fernet.decrypt(encrypted_data)\par
+    decrypted_json_data = decrypted_data.decode()\par
+    data_dict = json.loads(decrypted_json_data)\par
+    return data_dict\par
+if __name__ == "__main__":\par
+    print(f"Generated Key: \{key.decode()\}")\par
+    sensitive_data = \{\par
+        "name": "Arjun",\par
+        "age": 35,\par
+        "address": \{\par
+            "street": "13 Silk Board",\par
+            "city": "Bangalore"\par
+        \}\par
+    \}\par
+    encrypted_data = encrypt_dict(sensitive_data, key)\par
+    print(f"Encrypted Data: \{encrypted_data\}")\par
+    decrypted_data = decrypt_dict(encrypted_data, key)\par
+    print(f"Decrypted Data: \{decrypted_data\}")\par
+\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 20. Memory Management:\par
+Write a program to monitor memory usage of a Python script and log it to the\par
+console at regular intervals.\par
+\cf0 import psutil\par
+import time\par
+def monitor_memory(interval_seconds=1, duration_seconds=10):\par
+    print(f"Monitoring memory usage every \{interval_seconds\} seconds for \{duration_seconds\} seconds...")\par
+    start_time = time.time()\par
+    while (time.time() - start_time) < duration_seconds:\par
+             memory_usage = psutil.virtual_memory()\par
+    print(f"Memory Usage - Total: \{memory_usage.total / (1024*1024):.2f\} MB, "\par
+              f"Available: \{memory_usage.available / (1024*1024):.2f\} MB, "\par
+              f"Used: \{memory_usage.used / (1024*1024):.2f\} MB, "\par
+              f"Free: \{memory_usage.free / (1024*1024):.2f\} MB, "\par
+              f"Percentage: \{memory_usage.percent:.2f\}%")\par
+    time.sleep(interval_seconds)\par
+if __name__ == "__main__":\par
+    monitor_memory(interval_seconds=2, duration_seconds=30)\par
+\par
+\cf1 Write a function that generates a large list of random numbers and uses memory\par
+profiling to identify any memory leaks.\par
+\cf0 pip install memory_profiler\par
+from memory_profiler import profile\par
+import random\par
+@profile\par
+def generate_large_list(size):\par
+    large_list = [random.random() for _ in range(size)]\par
+    return large_list\par
+if __name__ == "__main__":\par
+    # Generating a large list of random numbers with memory profiling\par
+    generate_large_list(1000000)  \par
+---------------------------------------------------------------------------------------------------------------------------\par
+ \cf1 21. Parallel Processing:\par
+ Use the multiprocessing module to parallelize a CPU-bound task, such as\par
+calculating the prime numbers in a given range.\par
+\cf0 import multiprocessing\par
+def is_prime(n):\par
+    if n <= 1:\par
+        return False\par
+    if n <= 3:\par
+        return True\par
+    if n % 2 == 0 or n % 3 == 0:\par
+        return False\par
+    i = 5\par
+    while i * i <= n:\par
+        if n % i == 0 or n % (i + 2) == 0:\par
+            return False\par
+        i += 6\par
+    return True\par
+def calculate_primes(start, end):\par
+    primes = []\par
+    for number in range(start, end + 1):\par
+        if is_prime(number):\par
+            primes.append(number)\par
+    return primes\par
+def parallel_prime_calculation(num_processes, start, end):\par
+    chunk_size = (end - start + 1) // num_processes\par
+    pool = multiprocessing.Pool(processes=num_processes)\par
+    results = []\par
+    for i in range(num_processes):\par
+        chunk_start = start + i * chunk_size\par
+        chunk_end = chunk_start + chunk_size - 1 if i < num_processes - 1 else end\par
+        results.append(pool.apply_async(calculate_primes, (chunk_start, chunk_end)))\par
+    pool.close()\par
+    pool.join()\par
+    primes = []\par
+    for result in results:\par
+        primes.extend(result.get())\par
+    return primes\par
+if __name__ == "__main__":\par
+    start_range = 1\par
+    end_range = 10000\par
+    num_processes = 4\par
+    print(f"Calculating prime numbers from \{start_range\} to \{end_range\} using \{num_processes\} processes...")\par
+    primes = parallel_prime_calculation(num_processes, start_range, end_range)\par
+    print(f"Found \{len(primes)\} prime numbers.")\par
+    print(primes)\par
+\cf1 Use the multiprocessing module to parallelize a CPU-bound task, such as\par
+calculating the prime numbers in a given range.\par
+\cf0 import numpy as np\par
+import multiprocessing\par
+def matrix_multiplication_chunk(matrix1, matrix2_chunk):\par
+    return np.dot(matrix1, matrix2_chunk)\par
+def parallel_matrix_multiplication(matrix1, matrix2, num_processes):\par
+    if matrix1.shape[1] != matrix2.shape[0]:\par
+        raise ValueError("Matrix dimensions are not compatible for multiplication.")\par
+    chunk_size = matrix2.shape[1] // num_processes\par
+    pool = multiprocessing.Pool(processes=num_processes)\par
+    results = []\par
+    for i in range(num_processes):\par
+        chunk_start = i * chunk_size\par
+        chunk_end = chunk_start + chunk_size\par
+        chunk_matrix2 = matrix2[:, chunk_start:chunk_end]\par
+        results.append(pool.apply_async(matrix_multiplication_chunk, (matrix1, chunk_matrix2)))\par
+    pool.close()\par
+    pool.join()\par
+    result_matrix = np.hstack([res.get() for res in results])\par
+    return result_matrix\par
+if __name__ == "__main__":\par
+    matrix1 = np.random.rand(2, 4)\par
+    matrix2 = np.random.rand(4, 5)\par
+    num_processes = 3\par
+    print("Matrix 1:")\par
+    print(matrix1)\par
+    print("Matrix 2:")\par
+    print(matrix2)\par
+    result_matrix = parallel_matrix_multiplication(matrix1, matrix2, num_processes)\par
+    print("Result Matrix (Parallel Multiplication):")\par
+    print(result_matrix)\par
+---------------------------------------------------------------------------------------------------------------------------\par
+\cf1 22. Error Handling:\par
+Write a function that raises and handles custom exceptions to manage specific\par
+error cases in a given task.\par
+\cf0\par
+class FactorialError(Exception):\par
+    def __init__(self, message):\par
+        self.message = message\par
+        super().__init__(self.message)\par
+\par
+def calculate_factorial(n):\par
+    if not isinstance(n, int):\par
+        raise FactorialError("Factorial can only be calculated for integers")\par
+    if n < 0:\par
+        raise FactorialError("Factorial is not defined for negative numbers")\par
+    if n == 0:\par
+        return 1\par
+    factorial = 1\par
+    for i in range(1, n + 1):\par
+        factorial *= i\par
+    return factorial\par
+\par
+# Example inputs:\par
+inputs = [5, 0, -1, 10.5, 'abc']\par
+\par
+for num in inputs:\par
+    try:\par
+        result = calculate_factorial(num)\par
+        print(f"The factorial of \{num\} is: \{result\}")\par
+    except ValueError:\par
+        print(f"Error: Input must be a valid integer")\par
+    except FactorialError as e:\par
+        print(f"FactorialError: \{e.message\}")\par
+    except Exception as e:\par
+        print(f"Unexpected Error: \{str(e)\}")\par
+\par
+\cf1 Write a function that uses context managers to handle resources (e.g., database\par
+connections) and properly handles exceptions that may occur during resource\par
+usage.\par
+\cf0\par
+\par
+\par
+-------------------------------------------------------------------------------------------------------------------\par
+\cf1 23. Recursion:\par
+Write a recursive function to calculate the nth Fibonacci number\cf0\par
+def fibonacci(n):\par
+    if n <= 0:\par
+        return 0\par
+    elif n == 1:\par
+        return 1\par
+    else:\par
+        return fibonacci(n-1) + fibonacci(n-2)\par
+n = 9\par
+result = fibonacci(n)\par
+print(f"The \{n\}th Fibonacci number is: \{result\}")\par
+\par
+\cf1 Write a recursive function to solve the Tower of Hanoi problem.\par
+\cf0\par
+def tower_of_hanoi(n, source, target, temp):\par
+    if n == 1:\par
+        print(f"Move disk 1 from \{source\} to \{target\}")\par
+        return\par
+    else:\par
+        tower_of_hanoi(n-1, source, temp, target)\par
+        print(f"Move disk \{n\} from \{source\} to \{target\}")\par
+        tower_of_hanoi(n-1, temp, target, source)\par
+n = 4\par
+tower_of_hanoi(n, 'A', 'C', 'B')\par
+-------------------------------------------------------------------------------------------------------------------\par
+\cf1 24. Data Merging:\par
+ Given two lists of dictionaries, write a function to merge them based on a\par
+common key.\par
+\cf0\par
+def merge_lists_of_dicts(list1, list2, common_key):\par
+    merged_list = []\par
+    dict2 = \{item[common_key]: item for item in list2\}\par
+    for item1 in list1:\par
+        key = item1[common_key]\par
+        if key in dict2:\par
+            merged_item = \{**item1, **dict2[key]\}  # Merge dictionaries\par
+            merged_list.append(merged_item)\par
+        else:\par
+            merged_list.append(item1)  # If no match found, add item from list1\par
+    for item2 in list2:\par
+        key = item2[common_key]\par
+        if key not in dict2:\par
+            merged_list.append(item2)\par
+    \par
+    return merged_list\par
+list1 = [\par
+    \{'id': 1, 'name': 'Alice', 'age': 25\},\par
+    \{'id': 2, 'name': 'Bob', 'age': 30\},\par
+    \{'id': 3, 'name': 'Charlie', 'age': 35\}\par
+]\par
+\par
+list2 = [\par
+    \{'id': 2, 'city': 'New York'\},\par
+    \{'id': 3, 'city': 'Los Angeles'\},\par
+    \{'id': 4, 'city': 'Chicago'\}\par
+]\par
+\par
+merged_list = merge_lists_of_dicts(list1, list2, 'id')\par
+print("Merged List:")\par
+print(merged_list)\par
+\par
+\cf1 Write a function that merges multiple DataFrames based on a common key and\par
+handles conflicts by keeping the most recent data.\par
+\cf0\par
+import pandas as pd\par
+def merge_dataframes_on_key(dataframes, key):\par
+    merged_df = dataframes[0]    \par
+    for df in dataframes[1:]:\par
+        merged_df = pd.merge(merged_df, df, on=key, how='outer') \par
+    merged_df = merged_df.sort_values(by=key)\par
+    merged_df = merged_df.drop_duplicates(subset=key, keep='last')\par
+    return merged_df\par
+\par
+df1 = pd.DataFrame(\{'id': [1, 2, 3], 'value': ['A', 'B', 'C']\})\par
+df2 = pd.DataFrame(\{'id': [2, 3, 4], 'value': ['D', 'E', 'F']\})\par
+df3 = pd.DataFrame(\{'id': [1, 3, 4], 'value': ['G', 'H', 'I']\})\par
+\par
+dataframes = [df1, df2, df3]\par
+merged_df = merge_dataframes_on_key(dataframes, 'id')\par
+print("Merged DataFrame:")\par
+print(merged_df)\par
+-------------------------------------------------------------------------------------------------------------------\par
+\cf1 25. Statistical Analysis:\par
+Write a function that calculates the mean, median, and mode of a list of numbers.\par
+\cf0\par
+import numpy as np\par
+from scipy import stats\par
+def calculate_statistics(numbers):\par
+    if not numbers:\par
+        raise ValueError("List of numbers is empty")\par
+    mean = np.mean(numbers)\par
+    median = np.median(numbers)\par
+    mode_result = stats.mode(numbers)\par
+    mode = mode_result.mode.tolist()  \par
+    return mean, median, mode\par
+\par
+numbers = [1, 2, 3, 4, 5, 5, 6, 6, 7, 8, 9]\par
+\par
+try:\par
+    mean, median, mode = calculate_statistics(numbers)\par
+    print(f"List of Numbers: \{numbers\}")\par
+    print(f"Mean: \{mean\}")\par
+    print(f"Median: \{median\}")\par
+    print(f"Mode: \{mode\}")\par
+except ValueError as e:\par
+    print(f"Error: \{e\}")\par
+\cf1 Write a function that calculates the standard deviation and variance of a list of\par
+numbers.\cf0\par
+import numpy as np\par
+def calculate_std_and_var(numbers):\par
+    if not numbers:\par
+        raise ValueError("List of numbers is empty")\par
+    variance = np.var(numbers)\par
+    std_deviation = np.std(numbers)\par
+    \par
+    return std_deviation, variance\par
+\par
+numbers = [1, 2, 3, 4, 5, 5, 6, 6, 7, 8, 9]\par
+\par
+try:\par
+    std_deviation, variance = calculate_std_and_var(numbers)\par
+    print(f"List of Numbers: \{numbers\}")\par
+    print(f"Standard Deviation: \{std_deviation:.2f\}")\par
+    print(f"Variance: \{variance:.2f\}")\par
+except ValueError as e:\par
+    print(f"Error: \{e\}")\par
+\par
+-------------------------------------------------------------------------------------------------------------------\f2\lang1032\par
+\f0\lang1033\par
+}
+ 

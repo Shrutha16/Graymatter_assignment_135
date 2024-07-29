@@ -1,0 +1,469 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil\fcharset0 Calibri;}{\f1\fnil\fcharset161 Calibri;}}
+{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\qc\f0\fs36\lang9 Assignment\par
+
+\pard\sa200\sl276\slmult1\par
+\fs22 1. List Comprehensions\par
+a. Write a list comprehension that generates a list of squares of the numbers from 1 to 10\par
+squares = [x**2 for x in range(1, 11)]\par
+print(squares)\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Write a list comprehension to extract all the vowels from the string "hello world".\par
+vowel = [char for char in "hello world" if char in "aeiou"]\par
+print(vowel)\par
+-------------------------------------------------------------------------------------------------------------------\par
+2. Dictionary Comprehension\par
+a. Create a dictionary where the keys are numbers from 1 to 5 and the values are the cubes of the keys.\par
+cube_dictionary = \{x: x**3 for x in range(1, 6)\}\par
+print(cube_dictionary)\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Create a dictionary where the keys are the first letters of the words in the list ["apple",\par
+"banana", "cherry"] and the values are the words themselves.\par
+\par
+words = ["apple", "banana", "cherry"]\par
+first_letter_dict = \{word[0]: word for word in words\}\par
+print(first_letter_dict)\par
+-------------------------------------------------------------------------------------------------------------------\par
+3. Lambda Functions\par
+a. Write a lambda function that adds 10 to a given number and use it to add 10 to the\par
+number 5\par
+add_ten = lambda x: x + 10\par
+result = add_ten(5)\par
+print(result)\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Write a lambda function that checks if a number is even and use it to test the number 4\par
+is_even = lambda x: x % 2 == 0\par
+result = is_even(4)\par
+print(result)\par
+-------------------------------------------------------------------------------------------------------------------\par
+4. Filter Function\par
+a. Use the filter function to filter out the odd numbers from the list [1, 2, 3, 4, 5, 6, 7, 8, 9,\par
+10].\par
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\par
+filtered_numbers = list(filter(lambda x: x % 2 == 0, numbers))\par
+print(filtered_numbers)\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Use the filter function to remove all strings shorter than 4 characters from the list ["cat",\par
+"dog", "elephant", "rat"].\par
+words = ["cat", "dog", "elephant", "rat"]\par
+filtered_words = list(filter(lambda x: len(x) >= 4, words))\par
+print(filtered_words)\par
+-------------------------------------------------------------------------------------------------------------------\par
+5. Map Function\par
+a. Use the map function to double all the numbers in the list [1, 2, 3, 4, 5].\par
+numbers = [1, 2, 3, 4, 5]\par
+doubled_numbers = list(map(lambda x: x * 2, numbers))\par
+print(doubled_numbers)\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Use the map function to convert a list of integers [1, 2, 3] to their corresponding string\par
+representations.\par
+numbers = [1, 2, 3]\par
+number_strings = list(map(lambda x: str(x), numbers))\par
+print(number_strings)\par
+-------------------------------------------------------------------------------------------------------------------\par
+6. Reduce Function\par
+a. Use the reduce function to find the product of the numbers in the list [1, 2, 3, 4, 5].\par
+from functools import reduce\par
+def multiply(x, y):\par
+    return x * y\par
+numbers = [1, 2, 3, 4, 5]\par
+product = reduce(multiply, numbers)\par
+print(product)  \par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Use the reduce function to concatenate a list of strings ["Hello", "World", "from",\par
+"Python"] into a single string.\par
+\par
+from functools import reduce\par
+def concatenate_strings(x, y):\par
+    return x + " " + y\par
+strings = ["Hello", "World", "from", "Python"]\par
+concatenated_string = reduce(concatenate_strings, strings)\par
+print(concatenated_string)\par
+-------------------------------------------------------------------------------------------------------------------\par
+7. Generator Functions\par
+a. Create a generator function that yields the first 5 even numbers\par
+\par
+def first_five_even_numbers():\par
+    num = 0\par
+    count = 0\par
+    while count < 5:\par
+        if num % 2 == 0:\par
+            yield num\par
+            count += 1\par
+        num += 1\par
+\par
+even = list(first_five_even_numbers())\par
+print(even)\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Create a generator function that yields numbers in the Fibonacci sequence up to the\par
+10th number.\par
+\par
+def fibonacci_sequence():\par
+    a, b = 0, 1\par
+    count = 0\par
+    while count < 10:\par
+        yield a\par
+        a, b = b, a + b\par
+        count += 1\par
+fibonacci = list(fibonacci_sequence())\par
+print(fibonacci)\par
+-------------------------------------------------------------------------------------------------------------------\par
+8. Handling Exceptions\par
+a. Write a function that takes two numbers and returns their division, handling the division\par
+by zero exception.\par
+\par
+def divide_numbers(a, b):\par
+    try:\par
+        result = a / b\par
+    except ZeroDivisionError:\par
+        result = float('inf') \par
+    return result\par
+\par
+# Example \par
+print(divide_numbers(10, 2))   \par
+print(divide_numbers(5, 0))    \par
+print(divide_numbers(-8, 4))   \par
+print(divide_numbers(0, 10))  \par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Write a function that reads a File and handles the File not found exception\par
+\par
+def read_file(filename):\par
+    try:\par
+        with open(filename, 'r') as file:\par
+            content = file.read()\par
+    except FileNotFoundError:\par
+        content = "File not found"\par
+    return content\par
+-------------------------------------------------------------------------------------------------------------------\par
+9. File I/O\par
+a. Write a program that writes the string "Hello, World!" to a \f1\u976?ile and then reads it back.\par
+\par
+with open('hello.txt', 'w') as file:\par
+    file.write("Hello, World!")\par
+\par
+with open('hello.txt', 'r') as file:\par
+    content = file.read()\par
+print(content)\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Write a program that appends the string "Goodbye!" to an existing file and then reads\par
+and prints the file content.\par
+\par
+with open('hello.txt', 'a') as file:\par
+    file.write("\\nGoodbye!")\par
+with open('hello.txt', 'r') as file:\par
+    content = file.read()\par
+print(content)\par
+-------------------------------------------------------------------------------------------------------------------\par
+\par
+10. Regular Expressions\par
+a. Use regular expressions to find all the words starting with 'a' in the string "apple and\par
+banana are amazing\par
+\par
+import re\par
+text = "apple and banana are amazing"\par
+words_starting_with_a = re.findall(r'\\b[aA]\\w+', text)\par
+print(words_starting_with_a)\par
+\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Use regular expressions to extract all the email addresses from the string "contact us at\par
+email@example.com or admin@site.org".\par
+\par
+import re\par
+text = "contact us at email@example.com or admin@site.org"\par
+emails = re.findall(r'\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]\{2,\}\\b', text)\par
+print(emails)\par
+\par
+-------------------------------------------------------------------------------------------------------------------\par
+11. Classes and Objects\par
+a. Create a class Person with attributes name and age. Instantiate an object of this class and\par
+print its attributes.\par
+\par
+class Person:\par
+    def __init__(self, name, age):\par
+        self.name = name\par
+        self.age = age\par
+person = Person("Julie", 40)\par
+print(person.name, person.age)\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Create a class Car with attributes make, model, and year. Instantiate an object of this\par
+class and print its attributes.\par
+\par
+class Car:\par
+    def __init__(self, make, model, year):\par
+        self.make = make\par
+        self.model = model\par
+        self.year = year\par
+\par
+car = Car("Hyundai", "Creta", 2017)\par
+print(car.make, car.model, car.year)\par
+-------------------------------------------------------------------------------------------------------------------\par
+12. Inheritance\par
+a. Create a class Employee that inherits from the Person class and adds an attribute salary.\par
+Instantiate an object of Employee and print all its attributes.\par
+\par
+class Person:\par
+    def __init__(self, name, age):\par
+        self.name = name\par
+        self.age = age\par
+\par
+class Employee(Person):\par
+    def __init__(self, name, age, salary):\par
+        super().__init__(name, age)\par
+        self.salary = salary\par
+\par
+employee = Employee("Lokesh", 23, 40000)\par
+\par
+print(employee.name)    \par
+print(employee.age)     \par
+print(employee.salary)  \par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Create a class Manager that inherits from Employee and adds an attribute department.\par
+Instantiate an object of Manager and print all its attributes.\par
+\par
+class Person:\par
+    def __init__(self, name, age):\par
+        self.name = name\par
+        self.age = age\par
+\par
+class Employee(Person):\par
+    def __init__(self, name, age, salary):\par
+        super().__init__(name, age)\par
+        self.salary = salary\par
+\par
+class Manager(Employee):\par
+    def __init__(self, name, age, salary, department):\par
+        super().__init__(name, age, salary)\par
+        self.department = department\par
+\par
+manager = Manager("Karthik", 23, 80000, "Full stack")\par
+\par
+print(manager.name)        \par
+print(manager.age)         \par
+print(manager.salary)      \par
+print(manager.department) \par
+-------------------------------------------------------------------------------------------------------------------\par
+13. Static Methods\par
+a. Add a static method to the Person class that returns a greeting message.\par
+\par
+class Person:\par
+    def __init__(self, name, age):\par
+        self.name = name\par
+        self.age = age\par
+\par
+    @staticmethod\par
+    def greet():\par
+        return "Hello!"\par
+\par
+print(Person.greet())\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Add a static method to the MathUtils class that returns the square of a given number.\par
+\par
+class MathUtils:\par
+    @staticmethod\par
+    def square(x):\par
+        return x ** 2\par
+print(MathUtils.square(5))\par
+-------------------------------------------------------------------------------------------------------------------\par
+14. Class Methods\par
+a. Add a class method to the Person class that returns a new instance of Person with a\par
+default name and age.\par
+\par
+class Person:\par
+    def __init__(self, name, age):\par
+        self.name = name\par
+        self.age = age\par
+\par
+    @classmethod\par
+    def create_default(cls):\par
+        return cls("Anonymous", 0)\par
+\par
+default_person = Person.create_default()\par
+print(default_person.name, default_person.age)\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Add a class method to the Book class that creates a new Book instance from a given title\par
+and author.\par
+\par
+class Book:\par
+    def __init__(self, title, author):\par
+        self.title = title\par
+        self.author = author\par
+\par
+    @classmethod\par
+    def from_title_author(cls, title, author):\par
+        return cls(title, author)\par
+\par
+book = Book.from_title_author("Java Programming ", "Balaguruswamy")\par
+print(book.title, book.author)\par
+\par
+-------------------------------------------------------------------------------------------------------------------\par
+15. Magic Methods\par
+a. Override the __str__ method in the Person class to return a formatted string.\par
+\par
+class Person:\par
+    def __init__(self, name, age):\par
+        self.name = name\par
+        self.age = age  \par
+    def __str__(self):\par
+        return f"Person: \{self.name\}, Age: \{self.age\}"\par
+\par
+person = Person("Thomas", 30)\par
+print(person)       \par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Override the __add__ method in a Vector class to add two vectors together\par
+\par
+class Vector:\par
+    def __init__(self, x, y):\par
+        self.x = x\par
+        self.y = y\par
+\par
+    def __add__(self, other):\par
+        return Vector(self.x + other.x, self.y + other.y)\par
+\par
+v1 = Vector(1, 2)\par
+v2 = Vector(3, 4)\par
+result = v1 + v2\par
+print(result.x, result.y)\par
+-------------------------------------------------------------------------------------------------------------------\par
+16. Context Managers\par
+a. Create a context manager that prints "Entering" when entering the context and "Exiting" when exiting the context.\par
+\par
+class MyContextManager:\par
+    def __enter__(self):\par
+        print("Entering")\par
+    \par
+    def __exit__(self, exc_type, exc_val, exc_tb):\par
+        print("Exiting")\par
+\par
+with MyContextManager():\par
+    print("Inside the context")\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Create a context manager that temporarily changes the current working directory and\par
+restores it back when exiting the context.\par
+\par
+import os\par
+class ChangeDirContext:\par
+    def __init__(self, new_dir):\par
+        self.new_dir = new_dir\par
+        self.saved_dir = None\par
+\par
+    def __enter__(self):\par
+        self.saved_dir = os.getcwd()\par
+        os.chdir(self.new_dir)\par
+    \par
+    def __exit__(self, exc_type, exc_val, exc_tb):\par
+        os.chdir(self.saved_dir)\par
+\par
+with ChangeDirContext('/tmp'):\par
+    print("Current directory:", os.getcwd())\par
+\par
+print("Current directory (after context):", os.getcwd())\par
+-------------------------------------------------------------------------------------------------------------------\par
+17. Iterators\par
+a. Create a custom iterator that returns numbers from 1 to 5.\par
+\par
+class NumIterator:\par
+    def __init__(self):\par
+        self.current = 0\par
+\par
+    def __iter__(self):\par
+        return self\par
+\par
+    def __next__(self):\par
+        self.current += 1\par
+        if self.current > 5:\par
+            raise StopIteration\par
+        return self.current\par
+\par
+numbers = NumIterator()\par
+for num in numbers:\par
+    print(num)\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Create a custom iterator that returns the characters in a string one by one.\par
+\par
+class StringIter:\par
+    def __init__(self, text):\par
+        self.text = text\par
+        self.index = 0\par
+\par
+    def __iter__(self):\par
+        return self\par
+\par
+    def __next__(self):\par
+        if self.index >= len(self.text):\par
+            raise StopIteration\par
+        result = self.text[self.index]\par
+        self.index += 1\par
+        return result\par
+\par
+text_iter = StringIter("Hello")\par
+for char in text_iter:\par
+    print(char)\par
+-------------------------------------------------------------------------------------------------------------------\par
+18. Modules and Packages\par
+a. Create a simple module my_module.py with a function greet that prints "Hello, World!".\par
+Import and use this function in another script.\par
+\par
+# File: my_module.py\par
+\par
+def greet():\par
+    print("Hello, World!")\par
+\par
+# Usage in another script:\par
+\par
+ from my_module import greet\par
+ greet()\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Create a package my_package with a module utils.py that contains a function square that\par
+returns the square of a number. Import and use this function in another script.\par
+\par
+# File: my_package/utils.py\par
+def square(x):\par
+    return x ** 2\par
+\par
+# Usage in another script:\par
+# from my_package.utils import square\par
+# result = square(5)\par
+# print(result)\par
+-------------------------------------------------------------------------------------------------------------------\par
+19. Date and Time\par
+a. Write a program that gets the current date and time and prints it in the format "YYYYMM-DD HH:MM".\par
+\par
+from datetime import datetime\par
+now = datetime.now()\par
+formatted_datetime = now.strftime("%Y%m-%d %H:%M")\par
+print(formatted_datetime)\par
+\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Write a program that calculates the number of days between two given dates\par
+\par
+from datetime import datetime\par
+date_str1 = "2023-01-01"\par
+date_str2 = "2023-12-31"\par
+\par
+date1 = datetime.strptime(date_str1, "%Y-%m-%d")\par
+date2 = datetime.strptime(date_str2, "%Y-%m-%d")\par
+\par
+delta = date2 - date1\par
+print(delta.days)\par
+-------------------------------------------------------------------------------------------------------------------\par
+20. Collections\par
+a. Use the collections.Counter class to count the occurrences of each character in the string\par
+"abracadabra".\par
+\par
+from collections import Counter\par
+text = "abracadabra"\par
+char_count = Counter(text)\par
+print(char_count)\par
+-------------------------------------------------------------------------------------------------------------------\par
+b. Use the collections.defaultdict class to create a dictionary that returns a default value of\par
+0 for any new keys.\par
+\par
+from collections import defaultdict\par
+default_dictionary = defaultdict(int)\par
+default_dictionary['a'] = 1\par
+print(default_dictionary['a'])  \par
+print(default_dictionary['b']) \par
+\par
+-------------------------------------------------------------------------------------------------------------------\f0\par
+}
+ 
